@@ -1,29 +1,38 @@
 <template>
-<div class="box">
-<div id="nav">
-    <router-link class="link" to="/">Home</router-link> |
-    <router-link class="link"  :class="{disabled: $store.state.isEnter}"   to="/about" >Sudoku</router-link>
-</div>
-  <router-view />
-</div>
+  <div class="box">
+    <div id="nav">
+      <router-link class="link" to="/">Home</router-link> |
+      <router-link
+        class="link"
+        :class="{ disabled: $store.state.isEnter }"
+        to="/about"
+        >Sudoku</router-link
+      > | 
+      <router-link
+        class="link"
+        :class="{ disabled: $store.state.isEnter }"
+        to="/people"
+        >Find Players</router-link
+      >
+    </div>
+    <router-view />
+  </div>
 </template>
 
-<script>
-
-</script>
+<script></script>
 
 <style>
-.link{
+.link {
   text-decoration: none;
   color: teal;
 }
-.box{
+.box {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .disabled {
-    opacity: 0.5;
-    pointer-events: none;
+  opacity: 0.5;
+  pointer-events: none;
 }
 </style>

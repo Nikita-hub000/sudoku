@@ -6,7 +6,8 @@ const store = createStore({
       isEnter: true,
       name: '',
       password: '',
-      email: ''
+      email: '',
+      id: 'aaaaaa'
     };
   },
   getters: {},
@@ -21,6 +22,9 @@ const store = createStore({
         state.name = login
         state.password = pass
         state.email = gmail
+    },
+    showId(state, id){
+      state.id = id
     }
   },
 });

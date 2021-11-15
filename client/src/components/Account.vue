@@ -16,9 +16,26 @@
     <p class="txt">
       Количество решенных судоку: <span>{{ user.sudokuCount }}</span>
     </p>
-    <p class="exp bounce">
-      {{ user.experience }} exp
-    </p>
+    <p class="exp bounce">{{ user.experience }} exp</p>
+    <div>
+      <div v-for="(f, i) in friend" :key="i">
+        <div v-if="!f.isFriend" class="txt">
+          <h1>Новая заявка</h1>
+          <p>ID: {{ f.requestUser }}</p>
+          <p>Дата заявки: {{ f.date }}</p>
+          <button @click="approveFriend(f.requestUser)">ADD</button>
+          <button @click="deleteFriend(f.requestUser)">Отклонить</button>
+          <p>Перейти в профиль</p>
+        </div>
+        <div v-else class="txt">
+          <p>Ваш друг</p>
+          <p>ID: {{ f.requestUser }}</p>
+          <p>Дата заявки: {{ f.date }}</p>
+          <button @click="deleteFriend(f.requestUser)">Отклонить</button>
+          <p @click="profile(f.requestUser)">Перейти в профиль</p>
+        </div>
+      </div>
+    </div>
     <p class="link" @click="back()">Вернуться на главный экран</p>
     <p class="link" @click="isClick = !isClick">Поменять пароль?</p>
     <form @submit.prevent v-if="isClick" class="forma">
@@ -49,9 +66,13 @@ export default {
       err: false,
       user: {},
       isShow: false,
+      friend: [],
     };
   },
   methods: {
+    get id() {
+      return store.state.id.id;
+    },
     back() {
       this.$router.push("/about");
     },
@@ -90,9 +111,71 @@ export default {
 
       await result;
     },
+    async getFriends() {
+      let result = await fetch("http://localhost:8080/friend/renderResponse", {
+        method: "POST",
+        body: JSON.stringify({
+          responseUser: store.state.id.id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => (this.friend = res));
+      console.log(result);
+      await result;
+    },
+    async approveFriend(request) {
+      let result = await fetch("http://localhost:8080/friend/approve", {
+        method: "POST",
+        body: JSON.stringify({
+          requestUser: request,
+          responseUser: store.state.id.id,
+          isFriend: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      let result2 = await fetch("http://localhost:8080/friend/approve", {
+        method: "POST",
+        body: JSON.stringify({
+          requestUser: store.state.id.id,
+          responseUser: request,
+          isFriend: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(result);
+      await result;
+      await result2;
+      this.getFriends();
+    },
+    profile(id) {
+      this.$router.push(`/player/${id}`);
+    },
+    async deleteFriend(request) {
+      let result = await fetch("http://localhost:8080/friend/delete", {
+        method: "PUT",
+        body: JSON.stringify({
+          requestUser: request,
+          responseUser: store.state.id.id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(result);
+      await result;
+      this.getFriends();
+    },
   },
   beforeMount() {
     this.getInfo();
+    this.getFriends();
   },
 };
 </script>
@@ -140,7 +223,7 @@ export default {
   border: 1px solid teal;
   padding: 5px;
 }
-.exp{
+.exp {
   border: 1px solid teal;
   padding: 5px;
   background-color: teal;

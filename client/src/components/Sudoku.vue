@@ -14,14 +14,13 @@
       </button>
       <div v-show="isGenerate" class="sudoku__table">
         <input
-          :class="{ disabled: isFinish || counterError >= 3 }"
+          :class="{ disabled: isFinish || counterError >= 3, noEvent: value === null }"
           class="sudoku__item"
           type="number"
           v-for="(s, index) in sudoku"
           :key="index"
           :value="s"
           :disabled="isFinish || counterError >= 3"
-          @click="mark()"
           @input="
             checkColor(index, $event);
             change(index) ? (isFinish = true) : (isFinish = false);
@@ -58,10 +57,9 @@ export default {
       let a = makepuzzle();
       this.sudoku = a;
       this.trueVariant = solvepuzzle(a);
+      console.log(a)
+      console.log(this.trueVariant)
       this.id = uuid();
-      console.log(this.id);
-      console.log(a);
-      console.log(solvepuzzle(a));
       this.isGenerate = true;
       this.counterError = 0;
     },
@@ -69,10 +67,7 @@ export default {
       this.$router.push("/acc");
     },
     checkColor(ind, e) {
-      console.log(e.target.value);
       let el = document.querySelectorAll(".sudoku__item")[ind].value;
-      console.log(el);
-      console.log(this.sudoku[ind], el);
       if (this.trueVariant[ind] === parseInt(el)) {
         this.isError = false;
         document.querySelectorAll(".sudoku__item")[ind].classList.remove("red");
@@ -128,7 +123,6 @@ export default {
           "Content-Type": "application/json",
         },
       }).then((res) => {
-        console.log("aaa");
         if (res.status === 200) {
           console.log("ok");
         } else {
@@ -149,7 +143,6 @@ export default {
           "Content-Type": "application/json",
         },
       }).then((res) => {
-        console.log("aaa");
         if (res.status === 200) {
           console.log("ok");
         } else {
@@ -176,6 +169,7 @@ export default {
 }
 .sudoku__item {
   max-width: 40px;
+  height: 40px;
   border: 1px solid teal;
   border-collapse: collapse;
   text-align: center;
@@ -192,6 +186,9 @@ export default {
 .accLink:hover {
   text-decoration: underline;
 }
+.noEvent{
+  pointer-events: none;
+}
 
 .text {
   color: green;
@@ -199,6 +196,35 @@ export default {
 .sudoku__item:focus {
   outline: none;
 }
+.sudoku__item:nth-child(3n){
+  border-right: 1px solid rgb(255, 94, 0);
+}
+.sudoku__item:nth-child(9n+1){
+  border-left: 1px solid rgb(255, 94, 0);
+}
+.sudoku__item:nth-child(n+19):nth-child(-n+27){
+    border-bottom: 1px solid rgb(255, 94, 0);
+}
+.sudoku__item:nth-child(n+1):nth-child(-n+9){
+    border-top: 1px solid rgb(255, 94, 0);
+}
+.sudoku__item:nth-child(n+73):nth-child(-n+81){
+    border-bottom: 1px solid rgb(255, 94, 0);
+}
+.sudoku__item:nth-child(n+19):nth-child(-n+27){
+    border-bottom: 1px solid rgb(255, 94, 0);
+}
+.sudoku__item:nth-child(n+46):nth-child(-n+54){
+    border-bottom: 1px solid rgb(255, 94, 0);
+}
+
+
+
+
+/* .sudoku__item:nth-child(1n){
+  border-left: 1px solid blue;
+} */
+
 .sudoku__table {
   border: 1px solid teal;
   display: flex;

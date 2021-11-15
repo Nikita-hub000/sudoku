@@ -35,9 +35,9 @@ router.post("/userId", async (req, res) => {
     try {
       console.log(db);
       const { userId } = req.body;
-      await db.solved.removeColumn('solved', 'sudId')
-      let a = await db.solved.findAll({where: {userId}})
-  
+      // await db.solved.removeColumn('solved', 'sudId')
+      let a = await db.solved.findAll({where : {userId}})
+      console.log(a)
       return res.json({1: a})
     } catch (error) {
       res.status(404).json(error);
@@ -65,5 +65,27 @@ router.post("/solve", async (req, res) => {
     res.status(404).json(error);
   }
 });
+
+router.post("/userSudoku", async (req, res) => {
+  try {
+    let arr = []
+    const { userId } = req.body;
+    let a = await db.solved.findAll({where: {userId}})
+    let b = a.map(x => x.sudokuId)
+    console.log(b)
+    for(let i = 0; i< b.length; i++){
+      let result = await db.sudoku.findAll({where: {id: b[i]}})
+      arr.push(result)
+    }
+    return a ? res.status(200).json(arr) : res.status(404).json("err");
+  } catch (error) {
+    res.status(404).json('catch');
+  }
+});
+
+
+
+
+
 
 module.exports = router;

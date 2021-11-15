@@ -43,20 +43,22 @@ router.post("/restore", async (req, res) => {
       port: 465,
       secure: true,
       auth: {
-        user: "nodemailer01@mail.ru",
-        pass: "fdn75u7L44pTgpbeZWaY",
+        user: "nodemailer02@mail.ru",
+        pass: "yJGw52SzK8QHUz4UDYTq",
       },
     });
+    console.log(111)
 
     let result = await transporter.sendMail({
-      from: '"Смена пароля" <nodemailer01@mail.ru>',
-      to: email,
+      from: '"Смена пароля" <nodemailer02@mail.ru>',
+      to: email.toString(),
       subject: "Смена пароля",
       text: `Для смены пароля перейдите по ссылке http://localhost:3000/password/${uuid_v4()}`,
     });
     console.log(result);
     return res.status(200).json("ok");
   } catch (error) {
+    console.log(error)
     res.status(404).json("err");
   }
 });

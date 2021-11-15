@@ -9,15 +9,27 @@
         <div class="input">
           <div class="blockinput">
             <i class="icon-envelope-alt"></i>
-            <input v-model="userLog.name" @input="validateSign(userLog.name)" placeholder="Name" />
+            <input
+              v-model="userLog.name"
+              @input="validateSign(userLog.name)"
+              placeholder="Name"
+            />
           </div>
           <div class="blockinput">
             <i class="icon-envelope-alt"></i>
-            <input v-model="userLog.email" @input="validateSign(userLog.email)" placeholder="Email" />
+            <input
+              v-model="userLog.email"
+              @input="validateSign(userLog.email)"
+              placeholder="Email"
+            />
           </div>
           <div class="blockinput">
             <i class="icon-unlock"></i>
-            <input v-model="userLog.password" @input="validateSign(userLog.password)" placeholder="Password" />
+            <input
+              v-model="userLog.password"
+              @input="validateSign(userLog.password)"
+              placeholder="Password"
+            />
           </div>
         </div>
         <button
@@ -139,6 +151,24 @@ export default {
       });
       await result;
     },
+    async getInfo() {
+      let result = await fetch("http://localhost:8080/sudoku/userId", {
+        method: "POST",
+        body: JSON.stringify({ email: store.state.name.email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          return res.ok ? res.json() : "error";
+        })
+        .then((res) => (
+          store.commit("showId", {
+            id: res["1"][0]['id']
+          })))
+
+      await result;
+    },
     async sign() {
       let result = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
@@ -167,6 +197,7 @@ export default {
           store.commit("notlogin");
         }
       });
+      this.getInfo()
       await result;
     },
     showLogin() {
@@ -182,7 +213,7 @@ export default {
       this.isShowSign = false;
     },
     validateSign(block) {
-      console.log('block')
+      console.log("block");
       if (block === this.userLog.name || this.userLog.password) {
         if (
           /[a-z0-9]{6,}/gi.test(this.userLog.name) &&
@@ -194,10 +225,11 @@ export default {
           this.regSignName = true;
           this.signBtn = true;
         }
-      }
-      else if (block === this.userLog.email) {
+      } else if (block === this.userLog.email) {
         if (
-          /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/.test(this.userLog.email)
+          /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/.test(
+            this.userLog.email
+          )
         ) {
           this.regSignEmail = false;
           this.signBtn = false;
@@ -206,7 +238,6 @@ export default {
           this.signBtn = true;
         }
       }
-
     },
     validate(smth) {
       console.log("aaaa");
@@ -224,7 +255,9 @@ export default {
       } else if (smth === this.user.email) {
         if (
           //todo
-          /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/.test(this.user.email)
+          /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/.test(
+            this.user.email
+          )
         ) {
           this.regEmail = false;
           this.regBtn = false;

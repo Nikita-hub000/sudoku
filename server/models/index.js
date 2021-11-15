@@ -15,12 +15,17 @@ const sequalize = new Sequalize('sudoku', "root", "Bmstu1830", {
 const Users = require('./users')(sequalize)
 const Sudoku = require('./sudoku')(sequalize)
 const Solved = require('./solved')(sequalize)
-Users.hasMany(Solved)
-Sudoku.hasMany(Solved)
+const Chat = require('./chat')(sequalize)
+const Friend = require('./friend')(sequalize)
+// Users.hasMany(Solved)
+// Sudoku.hasMany(Solved)
+// Users.hasMany(Chat)
 
 module.exports ={
     sequalize, 
     users: Users,
     sudoku: Sudoku,
-    solved: Solved
+    solved: Solved,
+    chat: Chat,
+    friend: Friend
 }
